@@ -5,11 +5,19 @@ from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-on&=dp4ti1@m5tm&=ppws)6)%vv^+-%ydqe&4ii_q((3g54tq6'
+# SECURITY: read sensitive/production values from environment variables.
+# Provide safe defaults for local development only.
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-on&=dp4ti1@m5tm&=ppws)6)%vv^+-%ydqe&4ii_q((3g54tq6'
+)
 
-DEBUG = True  # Set to False in production!
+# DEBUG should be False in production; set the environment variable
+# DEBUG=False on Render to enable production mode.
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['art-share.onrender.com', 'localhost', '127.0.0.1']
+# ALLOWED_HOSTS can be provided as a comma-separated env var for Render.
+ALLOWED_HOSTS = [h for h in os.environ.get('ALLOWED_HOSTS', 'art-share.onrender.com,localhost,127.0.0.1').split(',') if h]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -35,12 +43,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOWED_ORIGINS = [
-    "https://art-shre.netlify.app",
-]
+CORS_ALLOW_ALL_ORIGINS = os.environ.get('CORS_ALLOW_ALL_ORIGINS', 'False') == 'True'
+# Allow a comma-separated list of origins, or default to the current frontend.
+default_cors = os.environ.get('CORS_ALLOWED_ORIGINS', 'https://art-shre.netlify.app')
+CORS_ALLOWED_ORIGINS = [o for o in default_cors.split(',') if o]
 
-CSRF_TRUSTED_ORIGINS = ['https://art-share.onrender.com']
+# CSRF trusted origins (comma-separated env var).
+CSRF_TRUSTED_ORIGINS = [u for u in os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://art-share.onrender.com').split(',') if u]
 
 ROOT_URLCONF = 'artshare.urls'
 
