@@ -1,9 +1,11 @@
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied, NotFound
 from .models import Artist, Artwork
 from .serializers import ArtistSerializer, ArtworkSerializer, JWTLoginSerializer
+
+
 
 class RegisterArtistView(APIView):
     permission_classes = [permissions.AllowAny]
