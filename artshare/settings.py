@@ -44,7 +44,7 @@ INSTALLED_APPS = [
       'rest_framework',
       "corsheaders", 
 ]
-
+ALLOWED_HOSTS = ['art-share.onrender.com', 'localhost', '127.0.0.1']
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
@@ -56,7 +56,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-CORS_ALLOW_ALL_ORIGINS = True  
+
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "https://your-frontend-domain.netlify.app",
+    "http://localhost:5173",  # for Vite dev server
+]
+
 
 
 ROOT_URLCONF = 'artshare.urls'
@@ -136,7 +142,9 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'core.Artist'
 MEDIA_URL = '/media/'
-ALLOWED_HOSTS = ['art-share.onrender.com', 'localhost', '127.0.0.1']
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+CSRF_TRUSTED_ORIGINS = ['https://art-share.onrender.com']
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

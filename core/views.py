@@ -53,17 +53,25 @@ class ArtworkListCreateView(generics.ListCreateAPIView):
 # -------------------------------
 # Login
 # -------------------------------
+
 class LoginView(APIView):
     def post(self, request):
-        serializer = LoginSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.validated_data['user']
+        username = request.data.get("username")
+        password = request.data.get("password")
+        user = authenticate(username=username, password=password)
+        if user:
+            token, _ = Token.objects.get_or_create(user=user)
             return Response({
-                "message": "Login successful",
-                "username": user.username,
-                "email": user.email,
-            }, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                "token": token.key,
+                "artist": {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                    "bio": user.bio,
+                    "profile_picture": user.profile_picture.url if user.profile_picture else None,
+                }
+            })
+        return Response({"error": "Invalid credentials"}, status=400)
 from rest_framework import generics, permissions
 from .models import Artist
 from .serializers import ArtistSerializer
