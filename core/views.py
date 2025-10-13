@@ -25,6 +25,18 @@ class RegisterArtistView(APIView):
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class ArtistUpdateView(generics.RetrieveUpdateAPIView):
+    """
+    GET → Retrieve own profile
+    PUT/PATCH → Update username, email, bio, profile picture, password
+    """
+    queryset = Artist.objects.all()
+    serializer_class = ArtistSerializer
+    permission_classes = [permissions.AllowAny]  # change to IsAuthenticated later
+
+    lookup_field = 'id'  # You can use username instead if you prefe
+
 # -------------------------------
 # Artwork List / Create
 # -------------------------------
