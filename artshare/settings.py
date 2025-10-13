@@ -59,8 +59,8 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
-    "https://your-frontend-domain.netlify.app",
-    "http://localhost:5173",  # for Vite dev server
+    "https://art-shre.netlify.app",
+  
 ]
 
 
