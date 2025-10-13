@@ -133,6 +133,7 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'core.Artist'
 MEDIA_URL = '/media/'
-ALLOWED_HOSTS = ['artshare-backend.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['art-share.onrender.com', 'localhost', '127.0.0.1']
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
