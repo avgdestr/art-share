@@ -58,6 +58,9 @@ class ArtworkSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if not request or not request.user.is_authenticated:
             raise serializers.ValidationError("Authentication required to upload artwork.")
+        # Remove 'artist' from validated_data to avoid duplicate keyword argument error
+        # The artist is passed via serializer.save(artist=...) in the view
+        validated_data.pop('artist', None)
         artist = request.user
         try:
             artwork = Artwork.objects.create(artist=artist, **validated_data)
