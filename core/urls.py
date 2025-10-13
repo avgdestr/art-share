@@ -4,17 +4,17 @@ from .views import (
     ArtworkListCreateView,
     LoginView,
     ArtistDetailView,
-    ArtistUpdateView,
     PublicArtistDetailView
 )
-
 
 urlpatterns = [
     path('register/', RegisterArtistView.as_view(), name='register'),
     path('artworks/', ArtworkListCreateView.as_view(), name='artworks'),
     path('login/', LoginView.as_view(), name='login'),
+
+    # Authenticated retrieve/update (GET, PATCH, PUT) for the user's own profile
     path('artists/<str:username>/', ArtistDetailView.as_view(), name='artist-detail'),
-    path('artist/<int:id>/update/', ArtistUpdateView.as_view(), name='artist-update'),
-    path('artists/<str:username>/', PubArtistDetailView.as_view(), name='public-artist-detail'),    
- 
+
+    # Public read-only view of any artist profile
+    path('artists/<str:username>/public/', PublicArtistDetailView.as_view(), name='public-artist-detail'),
 ]
