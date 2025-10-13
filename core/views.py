@@ -97,7 +97,7 @@ class LoginView(APIView):
 # -------------------------------
 # Artist Public Info
 # -------------------------------
-class ArtistDetailView(generics.RetrieveAPIView):
+class PublicArtistDetailView(generics.RetrieveAPIView):
     """
     GET /api/artists/<username>/
     Returns artist profile info (public)

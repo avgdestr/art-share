@@ -4,7 +4,8 @@ from .views import (
     ArtworkListCreateView,
     LoginView,
     ArtistDetailView,
-    ArtistUpdateView
+    ArtistUpdateView,
+    PublicArtistDetailView
 )
 
 
@@ -14,6 +15,6 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('artists/<str:username>/', ArtistDetailView.as_view(), name='artist-detail'),
     path('artist/<int:id>/update/', ArtistUpdateView.as_view(), name='artist-update'),
-
+    path('artists/<str:username>/', PubArtistDetailView.as_view(), name='public-artist-detail'),    
  
 ]
