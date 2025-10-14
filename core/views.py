@@ -26,7 +26,7 @@ class RegisterArtistView(APIView):
                 return Response({"error": f"Internal error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class ArtistDetailView(generics.RetrieveUpdateAPIView):
+class ArtistDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Artist.objects.all()
     serializer_class = ArtistSerializer
     lookup_field = 'username'
@@ -36,8 +36,9 @@ class ArtistDetailView(generics.RetrieveUpdateAPIView):
             obj = super().get_object()
         except Exception:
             raise NotFound("Artist not found.")
-        if self.request.method in ['PUT', 'PATCH'] and obj != self.request.user:
-            raise PermissionDenied("You can only update your own profile.")
+        # Only the owner may update or delete their profile.
+        if self.request.method in ['PUT', 'PATCH', 'DELETE'] and obj != self.request.user:
+            raise PermissionDenied("You can only modify or delete your own profile.")
         return obj
 
 class ArtworkListCreateView(generics.ListCreateAPIView):

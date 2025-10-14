@@ -12,7 +12,7 @@ urlpatterns = [
     path('artworks/', ArtworkListCreateView.as_view(), name='artworks'),
     path('login/', LoginView.as_view(), name='login'),
 
-    # Authenticated retrieve/update (GET, PATCH, PUT) for the user's own profile
+    # Authenticated retrieve/update/delete (GET, PATCH, PUT, DELETE) for the user's own profile
     path('artists/<str:username>/', ArtistDetailView.as_view(), name='artist-detail'),
 
     # Public read-only view of any artist profile
