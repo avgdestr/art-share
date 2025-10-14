@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied, NotFound
 from .models import Artist, Artwork
-from .serializers import ArtistSerializer, ArtworkSerializer, JWTLoginSerializer
+from .serializers import ArtistSerializer, ArtworkSerializer, JWTLoginSerializer, PublicArtistSerializer
 
 
 
@@ -75,7 +75,7 @@ class LoginView(APIView):
 
 class PublicArtistDetailView(generics.RetrieveAPIView):
     queryset = Artist.objects.all()
-    serializer_class = ArtistSerializer
+    serializer_class = PublicArtistSerializer
     lookup_field = 'username'
     permission_classes = [permissions.AllowAny]
     def get_object(self):

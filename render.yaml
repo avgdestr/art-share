@@ -6,7 +6,9 @@ services:
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn artshare.wsgi --log-file -"
+  startCommand: "gunicorn artshare.wsgi --log-file -"
+  # Run migrations automatically on each deploy
+  releaseCommand: "python manage.py migrate"
     envVars:
       - key: SECRET_KEY
         value: "REPLACE_ME"

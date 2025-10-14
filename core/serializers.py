@@ -90,3 +90,17 @@ class JWTLoginSerializer(serializers.Serializer):
         data["refresh"] = str(refresh)
         data["user"] = user
         return data
+
+
+class PublicArtistSerializer(serializers.ModelSerializer):
+    """Serializer for public artist profiles exposed to other users.
+
+    Only non-sensitive fields are included so front-end clients can show a
+    profile without leaking email or password data.
+    """
+    profile_picture = serializers.ImageField(read_only=True)
+
+    class Meta:
+        model = Artist
+        fields = ['id', 'username', 'bio', 'profile_picture', 'created_at']
+        read_only_fields = ['id', 'username', 'bio', 'profile_picture', 'created_at']

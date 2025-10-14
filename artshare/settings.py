@@ -71,9 +71,13 @@ TEMPLATES = [
 WSGI_APPLICATION = 'artshare.wsgi.application'
 
 DATABASES = {
+    # Parse DATABASE_URL from environment (set by Render). Defaults to local sqlite.
     'default': dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600
+        conn_max_age=600,
+        # Allow overriding SSL requirement with DB_SSL env var (True/False). If
+        # not set, require SSL when DEBUG is False.
+        ssl_require=(os.environ.get('DB_SSL', 'True' if not DEBUG else 'False') == 'True')
     )
 }
 
