@@ -29,7 +29,15 @@ INSTALLED_APPS = [
     'core',  # your app
     'rest_framework',
     'corsheaders',
+    'cloudinary_storage', 
+    'cloudinary'
 ]
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'your_cloud_name',
+    'API_KEY': 'your_api_key',
+    'API_SECRET': 'your_api_secret'
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
