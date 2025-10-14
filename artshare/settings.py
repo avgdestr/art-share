@@ -3,6 +3,7 @@ import os
 import dj_database_url
 from datetime import timedelta
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY: read sensitive/production values from environment variables.
