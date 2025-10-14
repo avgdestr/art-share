@@ -45,7 +45,7 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = os.environ.get('CORS_ALLOW_ALL_ORIGINS', 'False') == 'True'
 # Allow a comma-separated list of origins, or default to the current frontend.
-default_cors = os.environ.get('CORS_ALLOWED_ORIGINS', 'https://art-shre.netlify.app')
+default_cors = os.environ.get('CORS_ALLOWED_ORIGINS', 'https://art-shar.netlify.app')
 CORS_ALLOWED_ORIGINS = [o for o in default_cors.split(',') if o]
 
 # CSRF trusted origins (comma-separated env var).
