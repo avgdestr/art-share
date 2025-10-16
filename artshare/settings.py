@@ -42,13 +42,20 @@ CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
 
 # Support explicit individual env vars as well (Render or other providers)
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_STORAGE__CLOUD_NAME') or os.environ.get('CLOUDINARY_CLOUD_NAME') or os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
-    'API_KEY': os.environ.get('CLOUDINARY_STORAGE__API_KEY') or os.environ.get('CLOUDINARY_API_KEY', ''),
-    'API_SECRET': os.environ.get('CLOUDINARY_STORAGE__API_SECRET') or os.environ.get('CLOUDINARY_API_SECRET', ''),
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_STORAGE__CLOUD_NAME', '') or os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': os.environ.get('CLOUDINARY_STORAGE__API_KEY', '') or os.environ.get('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.environ.get('CLOUDINARY_STORAGE__API_SECRET', '') or os.environ.get('CLOUDINARY_API_SECRET', ''),
 }
 
+# True when either CLOUDINARY_URL is set or the individual creds are present
+CLOUDINARY_CONFIGURED = bool(
+    CLOUDINARY_URL or (
+        CLOUDINARY_STORAGE.get('CLOUD_NAME') and CLOUDINARY_STORAGE.get('API_KEY') and CLOUDINARY_STORAGE.get('API_SECRET')
+    )
+)
+
 # Enable Cloudinary storage only when we have credentials
-if CLOUDINARY_URL or (CLOUDINARY_STORAGE.get('CLOUD_NAME') and CLOUDINARY_STORAGE.get('API_KEY') and CLOUDINARY_STORAGE.get('API_SECRET')):
+if CLOUDINARY_CONFIGURED:
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 else:
     # Explicitly use FileSystemStorage in non-cloud environments so MEDIA_ROOT works
