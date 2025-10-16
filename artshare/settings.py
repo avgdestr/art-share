@@ -30,15 +30,29 @@ INSTALLED_APPS = [
     'core',  # your app
     'rest_framework',
     'corsheaders',
-    'cloudinary_storage', 
+    'cloudinary_storage',
     'cloudinary'
 ]
+# Cloudinary configuration
+# Prefer a single CLOUDINARY_URL (cloudinary://<key>:<secret>@<cloud_name>)
+# or set individual env vars. If credentials are not present, Django will
+# fall back to the default FileSystemStorage (local media) which is useful
+# for local development.
+CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
+
+# Support explicit individual env vars as well (Render or other providers)
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'your_cloud_name',
-    'API_KEY': 'your_api_key',
-    'API_SECRET': 'your_api_secret'
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_STORAGE__CLOUD_NAME') or os.environ.get('CLOUDINARY_CLOUD_NAME') or os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': os.environ.get('CLOUDINARY_STORAGE__API_KEY') or os.environ.get('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.environ.get('CLOUDINARY_STORAGE__API_SECRET') or os.environ.get('CLOUDINARY_API_SECRET', ''),
 }
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Enable Cloudinary storage only when we have credentials
+if CLOUDINARY_URL or (CLOUDINARY_STORAGE.get('CLOUD_NAME') and CLOUDINARY_STORAGE.get('API_KEY') and CLOUDINARY_STORAGE.get('API_SECRET')):
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+else:
+    # Explicitly use FileSystemStorage in non-cloud environments so MEDIA_ROOT works
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
