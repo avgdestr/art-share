@@ -6,6 +6,7 @@ from .views import (
     ArtistDetailView,
     PublicArtistDetailView
 )
+from .views_health import HealthCheckView
 
 urlpatterns = [
     path('register/', RegisterArtistView.as_view(), name='register'),
@@ -17,4 +18,6 @@ urlpatterns = [
 
     # Public read-only view of any artist profile
     path('artists/<str:username>/public/', PublicArtistDetailView.as_view(), name='public-artist-detail'),
+    # Simple health endpoint to check Cloudinary configuration
+    path('health/', HealthCheckView.as_view(), name='health'),
 ]

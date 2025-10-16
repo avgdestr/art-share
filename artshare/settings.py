@@ -56,6 +56,10 @@ CLOUDINARY_CONFIGURED = bool(
 
 # Enable Cloudinary storage only when we have credentials
 if CLOUDINARY_CONFIGURED:
+    # Optional: allow putting uploads into a specific Cloudinary folder via env var
+    CLOUDINARY_UPLOAD_FOLDER = os.environ.get('CLOUDINARY_UPLOAD_FOLDER') or os.environ.get('CLOUDINARY_STORAGE__UPLOAD_FOLDER')
+    if CLOUDINARY_UPLOAD_FOLDER:
+        CLOUDINARY_STORAGE['UPLOAD_OPTIONS'] = {'folder': CLOUDINARY_UPLOAD_FOLDER}
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 else:
     # Explicitly use FileSystemStorage in non-cloud environments so MEDIA_ROOT works
