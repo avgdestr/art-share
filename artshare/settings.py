@@ -43,11 +43,12 @@ INSTALLED_APPS = [
 # for local development.
 CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
 
-# Support explicit individual env vars as well (Render or other providers)
+# Use the standard Render-provided individual env vars when CLOUDINARY_URL is
+# not present. Render and many PaaS providers set these exact variable names.
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_STORAGE__CLOUD_NAME', '') or os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
-    'API_KEY': os.environ.get('CLOUDINARY_STORAGE__API_KEY', '') or os.environ.get('CLOUDINARY_API_KEY', ''),
-    'API_SECRET': os.environ.get('CLOUDINARY_STORAGE__API_SECRET', '') or os.environ.get('CLOUDINARY_API_SECRET', ''),
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
 }
 
 # True when either CLOUDINARY_URL is set or the individual creds are present
@@ -60,31 +61,13 @@ CLOUDINARY_CONFIGURED = bool(
 # Enable Cloudinary storage only when we have credentials
 if CLOUDINARY_CONFIGURED:
     # Optional: allow putting uploads into a specific Cloudinary folder via env var
-    CLOUDINARY_UPLOAD_FOLDER = os.environ.get('CLOUDINARY_UPLOAD_FOLDER') or os.environ.get('CLOUDINARY_STORAGE__UPLOAD_FOLDER')
+    CLOUDINARY_UPLOAD_FOLDER = os.environ.get('CLOUDINARY_UPLOAD_FOLDER')
     if CLOUDINARY_UPLOAD_FOLDER:
         CLOUDINARY_STORAGE['UPLOAD_OPTIONS'] = {'folder': CLOUDINARY_UPLOAD_FOLDER}
+    # Use Cloudinary storage backend when credentials are present. The
+    # cloudinary and django-cloudinary-storage packages must be installed in
+    # the runtime environment (e.g. via requirements.txt on Render).
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-    # Ensure cloudinary SDK is configured with the provided credentials so
-    # cloudinary_storage has the right settings at runtime. Import here to
-    # avoid requiring the package during static analysis when not configured.
-    try:
-        import cloudinary
-        # If a single CLOUDINARY_URL is provided, cloudinary.config will
-        # parse and use it automatically. Otherwise, set values explicitly.
-        if CLOUDINARY_URL:
-            cloudinary.config(cloudinary_url=CLOUDINARY_URL)
-        else:
-            cloudinary.config(
-                cloud_name=CLOUDINARY_STORAGE.get('CLOUD_NAME'),
-                api_key=CLOUDINARY_STORAGE.get('API_KEY'),
-                api_secret=CLOUDINARY_STORAGE.get('API_SECRET')
-            )
-        logger.info('Cloudinary configured: using MediaCloudinaryStorage as DEFAULT_FILE_STORAGE')
-    except Exception as e:
-        # If cloudinary isn't installed or config fails, fall back and log the error.
-        logger.exception('Failed to configure cloudinary SDK: %s', e)
-        # Defensive fallback: revert to local FileSystemStorage to avoid runtime crashes
-        DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 else:
     # Explicitly use FileSystemStorage in non-cloud environments so MEDIA_ROOT works
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
