@@ -1,4 +1,5 @@
 from rest_framework import generics, permissions, status, serializers
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied, NotFound
@@ -9,6 +10,7 @@ from .serializers import ArtistSerializer, ArtworkSerializer, JWTLoginSerializer
 
 class RegisterArtistView(APIView):
     permission_classes = [permissions.AllowAny]
+    parser_classes = [MultiPartParser, FormParser]
     def post(self, request):
         serializer = ArtistSerializer(data=request.data)
         if serializer.is_valid():
@@ -45,6 +47,7 @@ class ArtworkListCreateView(generics.ListCreateAPIView):
     queryset = Artwork.objects.all().order_by('-created_at')
     serializer_class = ArtworkSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    parser_classes = [MultiPartParser, FormParser]
     def perform_create(self, serializer):
         if not self.request.user.is_authenticated:
             raise PermissionDenied("Authentication required to upload artwork.")
