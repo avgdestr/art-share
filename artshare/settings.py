@@ -159,3 +159,23 @@ AUTH_USER_MODEL = 'core.Artist'
 
 if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Optional runtime debug prints to help verify Cloudinary env vars on the host.
+# Enable by setting CLOUDINARY_DEBUG=True in the runtime environment (do NOT
+# enable in public or shared logs in production unless you understand the risk).
+if os.environ.get('CLOUDINARY_DEBUG', 'False') == 'True':
+    # Mask the API secret when printing
+    masked_secret = None
+    try:
+        secret = CLOUDINARY_STORAGE.get('API_SECRET')
+        if secret:
+            masked_secret = secret[:2] + '...' + secret[-2:]
+    except Exception:
+        masked_secret = None
+    print('🟩 Default storage backend:', DEFAULT_FILE_STORAGE)
+    print('🟦 Cloudinary configured:', CLOUDINARY_CONFIGURED)
+    print('🟨 Cloudinary storage dict:', {
+        'CLOUD_NAME': CLOUDINARY_STORAGE.get('CLOUD_NAME'),
+        'API_KEY': CLOUDINARY_STORAGE.get('API_KEY'),
+        'API_SECRET': masked_secret,
+    })
